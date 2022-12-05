@@ -3,6 +3,7 @@ package com.exam.service.impl;
 
 import com.exam.enitity.User;
 import com.exam.enitity.UserRole;
+import com.exam.helper.UserFoundException;
 import com.exam.repo.RoleRepository;
 import com.exam.repo.UserRepository;
 import com.exam.service.UserService;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
      if(local!=null)
      {
          System.out.println("user is already there");
-       throw new Exception("user is already there");
+         throw new UserFoundException();
      }
      else  {
 

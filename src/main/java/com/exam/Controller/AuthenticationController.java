@@ -16,9 +16,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping()
 public class AuthenticationController {
 
 
@@ -43,9 +45,6 @@ public class AuthenticationController {
     public ResponseEntity<?>  generateToken (@RequestBody JwtRequest jwtRequest) throws Exception {
 
         try {
-
-
-
             authenticate(jwtRequest.getUsername(),jwtRequest.getPassword());
         }
 
@@ -57,24 +56,18 @@ public class AuthenticationController {
 
        UserDetails userDetails= this.userDetailsService.loadUserByUsername(jwtRequest.getUsername());
 
-       String token= this.jwtUtil.generateToken(userDetails);
+        String token= this.jwtUtil.generateToken(userDetails);
 
-       return  ResponseEntity.ok(new JwtResponse(token));
+        return  ResponseEntity.ok(new JwtResponse(token));
 
     }
 
 
     private void authenticate(String username,String password) throws  Exception {
-
-
         try {
-
-
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,"hello"));
-
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
         }
-        catch (DisabledException e ){
-
+        catch (DisabledException e){
             throw new Exception("USER DISABLED" + e.getMessage());
         }
         catch (BadCredentialsException e) {

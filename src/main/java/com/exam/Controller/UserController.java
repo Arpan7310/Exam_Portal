@@ -3,9 +3,12 @@ package com.exam.Controller;
 import com.exam.enitity.Role;
 import com.exam.enitity.User;
 import com.exam.enitity.UserRole;
+import com.exam.helper.UserFoundException;
 import com.exam.service.UserService;
 import com.exam.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -21,12 +24,17 @@ public class UserController {
     private UserService userService;
 
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
     //create user
     @PostMapping("/")
     public User createUser(@RequestBody User user) throws Exception {
 
         user.setProfile("default.png");
 
+        user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
 
         //Set for list of user_roles
         Set<UserRole> roles= new HashSet<>();
@@ -63,6 +71,8 @@ public class UserController {
     public void deleteUser(@PathVariable("id") Long id) {
          this.userService.deleteUser(id);
     }
+
+
 
 
 
